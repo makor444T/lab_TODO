@@ -2,11 +2,18 @@ const list = document.getElementById('todo-list');
 const itemCountSpan = document.getElementById('item-count');
 const uncheckedCountSpan = document.getElementById('unchecked-count');
 
-let todos = [
-  { name: "Вивчити HTML", completed: true },
-  { name: "Вивчити CSS", completed: true },
-  { name: "Вивчити JavaScript", completed: false }
-];
+let todos = [];
+
+function loadTodos() {
+  const todosString = localStorage.getItem('todos');
+  if (todosString) {
+    todos = JSON.parse(todosString);
+  }
+}
+
+function saveTodos() {
+  localStorage.setItem('todos', JSON.stringify(todos));
+}
 
 function newTodo() {
   const todoName = prompt('Enter the new todo:');
@@ -16,6 +23,7 @@ function newTodo() {
       completed: false
     };
     todos.push(newTodo);
+    saveTodos();
     render();
     updateCounter();
   }
@@ -43,17 +51,18 @@ function updateCounter() {
 
 function deleteTodo(index) {
   todos.splice(index, 1);
+  saveTodos();
   render();
   updateCounter();
 }
 
 function checkTodo(index) {
   todos[index].completed = !todos[index].completed;
+  saveTodos();
   render();
   updateCounter();
 }
 
-// Викликаємо функцію render() для відображення списку при завантаженні сторінки
+loadTodos();
 render();
-// Оновлюємо лічильники
 updateCounter();
